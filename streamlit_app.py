@@ -23,7 +23,6 @@ my_dataframe = session.table("smoothies.public.fruit_options").select(
     col('SEARCH_ON')
 )
 
-# Convert Snowpark DataFrame to Pandas
 pd_df = my_dataframe.to_pandas()
 
 ingredients_list = st.multiselect(
@@ -32,8 +31,9 @@ ingredients_list = st.multiselect(
     max_selections=5
 )
 
+ingredients_string = ""
+
 if ingredients_list:
-    ingredients_string = ''
 
     for fruit_chosen in ingredients_list:
         ingredients_string += fruit_chosen + ', '
@@ -50,11 +50,10 @@ if ingredients_list:
             "https://my.smoothiefroot.com/api/fruit/" + fruit_chosen
         )
 
-        sf_df = st.dataframe(
+        st.dataframe(
             data=smoothiefroot_response.json(),
             use_container_width=True
         )
-
 
 my_insert_stmt = """ insert into smoothies.public.orders(ingredients, name_on_order)
                     values ('""" + ingredients_string + """','""" + name_on_order + """')"""
